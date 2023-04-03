@@ -20,12 +20,14 @@ int main(int argc, char* argv[]) {
     char* server_ip = argv[1];
     int server_port = atoi(argv[2]);
 
+    // Create socket
     int client_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (client_socket < 0) {
         cerr << "Error creating socket." << endl;
         exit(EXIT_FAILURE);
     }
-
+	
+    // Connect to server
     struct sockaddr_in server_address;
     memset(&server_address, 0, sizeof(server_address));
     server_address.sin_family = AF_INET;
@@ -47,7 +49,8 @@ int main(int argc, char* argv[]) {
         if (message.empty()) {
             continue;
         }
-
+	
+	// Send message to server
         if (send(client_socket, message.c_str(), message.length(), 0) < 0) {
             cerr << "Error sending message." << endl;
             continue;
@@ -56,6 +59,7 @@ int main(int argc, char* argv[]) {
         char buffer[BUFFER_SIZE];
         int bytes_received = recv(client_socket, buffer, BUFFER_SIZE - 1, 0);
 	
+	// Handle response from server
         if (bytes_received < 0) {
             cerr << "Error receiving response." << endl;
             continue;
